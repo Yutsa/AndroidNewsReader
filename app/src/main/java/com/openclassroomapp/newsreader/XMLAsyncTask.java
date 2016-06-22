@@ -17,7 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /**
  * @author Édouard WILLISSECK
  *
- * AsyncTask to fetch the XML from a RSS feed and return the corresponding Document.
+ * AsyncTask to fetch the Document (DOM) from the URL of a RSS feed.
  */
 public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
 
@@ -46,15 +46,16 @@ public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
 
             try {
                 return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
-            } finally {
+            }
+            finally {
               stream.close();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("XMLAsyncTask", "Erreur lors de la connection.");
         }
-        return null;
+        catch (Exception e) {
+            Log.e("XMLAsyncTask", "Erreur lors de la connection.");
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

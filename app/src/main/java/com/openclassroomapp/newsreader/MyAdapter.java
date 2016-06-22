@@ -16,6 +16,8 @@ import java.util.zip.Inflater;
 
 /**
  * @author Édouard WILLISSECK
+ *
+ * This is the Adapter for the list of articles from FakeNews.jar
  */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private List<FakeNews> news = FakeNewsList.all;

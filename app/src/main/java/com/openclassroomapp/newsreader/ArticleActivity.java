@@ -17,11 +17,12 @@ public class ArticleActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("title");
         setTitle(title);
 
-        String content = getIntent().getStringExtra("content");
+        String url = getIntent().getStringExtra("link");
+
 
         WebView webView = (WebView) findViewById(R.id.webView);
         if (webView != null) {
-            webView.loadData(content, "text/html; charset=utf-8", "UTF-8");
+            webView.loadUrl(url);
         }
     }
 }

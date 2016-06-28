@@ -1,17 +1,11 @@
 package com.openclassroomapp.newsreader;
 
 import android.os.AsyncTask;
-import android.provider.DocumentsContract;
 import android.util.Log;
 
 import org.w3c.dom.Document;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
@@ -39,21 +33,11 @@ public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
     @Override
     protected Document doInBackground(String... params) {
         try {
-            URL url = new URL(params[0]);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            InputStream stream = connection.getInputStream();
-
-            try {
-                return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
-            }
-            finally {
-              stream.close();
-            }
-
-        }
-        catch (Exception e) {
-            Log.e("XMLAsyncTask", "Erreur lors de la connection.");
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder();
+            return documentBuilder.parse(params[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

@@ -1,11 +1,9 @@
 package com.openclassroomapp.newsreader;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import org.w3c.dom.Document;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle("RMS feed");
+        setTitle(R.string.title);
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.list);
         RSSArticleAdapter adapter = new RSSArticleAdapter();
@@ -27,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         xmlAsyncTask = new XMLAsyncTask(adapter);
-        xmlAsyncTask.execute("https://stallman.org/rss/rss.xml");
+        xmlAsyncTask.execute("http://www.phoronix.com/rss.php");
+        //new XMLAsyncTask(adapter).execute("http://www.notebookcheck.net/RSS-Feed-Notebook-Reviews.8156.0.html");
 
     }
 

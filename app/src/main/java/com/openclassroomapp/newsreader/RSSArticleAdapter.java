@@ -61,9 +61,11 @@ public class RSSArticleAdapter extends RecyclerView.Adapter<RSSArticleAdapter.Ar
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String title = currentElement.getElementsByTagName("title").item(0)
+                    String title = currentElement.getElementsByTagName("title")
+                            .item(0)
                             .getTextContent();
-                    String link = currentElement.getElementsByTagName("link").item(0)
+                    String link = currentElement.getElementsByTagName("link")
+                            .item(0)
                             .getTextContent();
                     Intent intent = new Intent(context,
                             ArticleActivity.class);

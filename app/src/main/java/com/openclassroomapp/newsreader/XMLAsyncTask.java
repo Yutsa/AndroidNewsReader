@@ -1,9 +1,12 @@
 package com.openclassroomapp.newsreader;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,10 +16,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *
  * AsyncTask to fetch the Document (DOM) from the URL of a RSS feed.
  */
-public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
+public class XMLAsyncTask extends AsyncTask<String, Void, ArrayList<RSSArticle>> {
 
     interface DocumentConsumer {
-        void setXMLDocument(Document document);
+        void addArticle(ArrayList<RSSArticle> article);
     }
 
     private DocumentConsumer _documentConsumer;
@@ -31,14 +34,30 @@ public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
         _documentConsumer = consumer;
     }
     @Override
-    protected Document doInBackground(String... params) {
+    protected ArrayList<RSSArticle> doInBackground(String... params) {
+        ArrayList<RSSArticle> articleArrayList = new ArrayList<>();
         try {
             // Necessary to show the progress bar because otherwise the loading is instantaneous.
-            Thread.sleep(3000);
+            Thread.sleep(2000);
 
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder();
-            return documentBuilder.parse(params[0]);
+            Document document = documentBuilder.parse(params[0]);
+
+            /* Gets the title of the RSS */
+            String channelTitle = document.getElementsByTagName("title").item(0).getTextContent();
+
+            NodeList nodeList = document.getElementsByTagName("item");
+
+            for (int i = 0; i < nodeList.getLength(); ++i) {
+                Element element = (Element) nodeList.item(i);
+                String title = element.getElementsByTagName("title").item(0).getTextContent();
+                String link = element.getElementsByTagName("link").item(0).getTextContent();
+                String date = element.getElementsByTagName("pubDate").item(0).getTextContent();
+                articleArrayList.add(new RSSArticle(title, link, date, channelTitle));
+            }
+            return articleArrayList;
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -46,8 +65,9 @@ public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
     }
 
     @Override
-    protected void onPostExecute(Document document) {
-        Log.i("XMLAsyncTask", "Téléchargement du XML terminé.");
-        _documentConsumer.setXMLDocument(document);
+    protected void onPostExecute(ArrayList<RSSArticle> rssArticles) {
+        super.onPostExecute(rssArticles);
+
+        _documentConsumer.addArticle(rssArticles);
     }
 }

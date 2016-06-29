@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<XMLAsyncTask> xmlAsyncTasks = new ArrayList<>();
-    private ArrayList<String> urls = new ArrayList<>();
+    private final ArrayList<XMLAsyncTask> xmlAsyncTasks = new ArrayList<>();
+    private final ArrayList<String> urls = new ArrayList<>();
     private RSSArticleAdapter adapter;
     private ProgressBar progressBar;
 

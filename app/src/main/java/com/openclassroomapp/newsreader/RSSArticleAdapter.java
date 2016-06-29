@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * @author Édouard WILLISSECK
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 public class RSSArticleAdapter extends RecyclerView.Adapter<RSSArticleAdapter.ArticleViewHolder>
         implements XMLAsyncTask.DocumentConsumer {
 
-    private ArrayList<Document> documents = new ArrayList<>();
+    private final ArrayList<RSSArticle> articleList = new ArrayList<>();
 
     @Override
     public ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,93 +32,66 @@ public class RSSArticleAdapter extends RecyclerView.Adapter<RSSArticleAdapter.Ar
 
     @Override
     public void onBindViewHolder(ArticleViewHolder holder, int position) {
-        int documentNumber = 0;
-        Document document = documents.get(documentNumber);
-        int documentLength = getDocumentLength(document);
-        Element element;
-
-        /*
-        If we want to display an article not in the current document
-        we go to the next document until all document have been displayed.
-        */
-        while (position > documentLength) {
-            position -= documentLength;
-            documentNumber++;
-            if (documentNumber < documents.size())
-                document = documents.get(documentNumber);
-            else
-                return;
-        }
-        element = (Element) document.getElementsByTagName("item").item(position);
-        if (element != null)
-            holder.display(element);
+        holder.display(articleList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        int count = 0;
-        if (documents.isEmpty())
-            return 0;
-        for (Document document : documents) {
-            count += document.getElementsByTagName("item").getLength();
-        }
-        return count;
-    }
-
-    public int getDocumentLength(Document document) {
-        return document.getElementsByTagName("item").getLength();
+        return articleList.size();
     }
 
     @Override
-    public void setXMLDocument(Document document) {
-        Log.i("RSSArticleAdapter", "Added a document");
-        this.documents.add(document);
-        Log.i("RSSArticleAdapter", "Documents:" + documents.toString());
+    public void addArticle(ArrayList<RSSArticle> articles) {
+        if (articles != null)
+            articleList.addAll(articles);
+        Collections.sort(articleList, new Comparator<RSSArticle>() {
+            @Override
+            public int compare(RSSArticle lhs, RSSArticle rhs) {
+                return rhs.getDate().compareTo(lhs.getDate());
+            }
+        });
         notifyDataSetChanged();
     }
 
     public void clearDocuments() {
-        documents.clear();
+        articleList.clear();
         Log.i("RSSArticleAdapter", "Cleared documents");
     }
 
     public boolean hasDocuments() {
-        return !documents.isEmpty();
+        return !articleList.isEmpty();
     }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
+        private final TextView date;
         private final Context context;
-        private Element currentElement;
+        private RSSArticle currentArticle;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.title);
+            date = (TextView) itemView.findViewById(R.id.article_date);
             context = itemView.getContext();
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String title = currentElement.getElementsByTagName("title")
-                            .item(0)
-                            .getTextContent();
-                    String link = currentElement.getElementsByTagName("link")
-                            .item(0)
-                            .getTextContent();
                     Intent intent = new Intent(context,
                             ArticleActivity.class);
-                    intent.putExtra("title", title);
-                    intent.putExtra("link", link);
+                    intent.putExtra("title", currentArticle.getTitle());
+                    intent.putExtra("link", currentArticle.getLink());
                     context.startActivity(intent);
 
                 }
             });
         }
 
-        public void display(Element element) {
-            currentElement = element;
-            title.setText(element.getElementsByTagName("title").item(0).getTextContent());
+        public void display(RSSArticle article) {
+            currentArticle = article;
+            title.setText(article.getTitle());
+            date.setText(article.getDateAsString());
         }
     }
 }

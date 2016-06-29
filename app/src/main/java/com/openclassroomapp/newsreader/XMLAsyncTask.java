@@ -33,6 +33,9 @@ public class XMLAsyncTask extends AsyncTask<String, Void, Document>{
     @Override
     protected Document doInBackground(String... params) {
         try {
+            // Necessary to show the progress bar because otherwise the loading is instantaneous.
+            Thread.sleep(3000);
+
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder();
             return documentBuilder.parse(params[0]);

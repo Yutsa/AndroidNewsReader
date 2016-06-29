@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">News Reader</string>
     <string name="title">OC News Reader</string>
+    <string name="refresh">Refresh</string>
+    <string name="add_url">Add URL</string>
+    <string name="add_url_string">Add a URL</string>
+    <string name="validate">Validate</string>
+    <string name="cancel">Cancel</string>
 </resources>

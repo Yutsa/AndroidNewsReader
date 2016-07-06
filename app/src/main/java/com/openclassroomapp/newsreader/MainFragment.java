@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +37,17 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.list);
-        adapter = new RSSArticleAdapter();
+        adapter = new RSSArticleAdapter((RSSArticleAdapter.URLLoader) getActivity());
 
         if (rv != null) {
             rv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -97,13 +104,21 @@ public class MainFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.refresh) {
-            loadArticles();
-        } else if (item.getItemId() == R.id.add_url) {
-            createInputDialog();
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                loadArticles();
+                return true;
+            case R.id.add_url:
+                createInputDialog();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

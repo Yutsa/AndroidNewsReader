@@ -17,7 +17,8 @@ public class ArticleActivity extends AppCompatActivity {
         setTitle(title);
 
         ArticleFragment articleFragment = ArticleFragment.create(
-                getIntent().getStringExtra("link"));
+                title, getIntent().getStringExtra("link"));
+
         getFragmentManager().beginTransaction()
                 .add(android.R.id.content, articleFragment)
                 .commit();

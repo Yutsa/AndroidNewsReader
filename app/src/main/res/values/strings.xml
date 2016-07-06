@@ -6,4 +6,7 @@
     <string name="add_url_string">Add a URL</string>
     <string name="validate">Validate</string>
     <string name="cancel">Cancel</string>
+    <string name="share">Share</string>
+    <string name="open_browser">Open in Browser</string>
+    <string name="share_article">Share this article!</string>
 </resources>

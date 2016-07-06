@@ -1,7 +1,6 @@
 package com.openclassroomapp.newsreader;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +21,15 @@ public class RSSArticleAdapter extends RecyclerView.Adapter<RSSArticleAdapter.Ar
         implements XMLAsyncTask.DocumentConsumer {
 
     private final ArrayList<RSSArticle> articleList = new ArrayList<>();
+    private URLLoader urlLoader;
+
+    interface URLLoader {
+        void load(String title, String link);
+    }
+
+    public RSSArticleAdapter(URLLoader urlLoader) {
+        this.urlLoader = urlLoader;
+    }
 
     @Override
     public ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -78,12 +86,7 @@ public class RSSArticleAdapter extends RecyclerView.Adapter<RSSArticleAdapter.Ar
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,
-                            ArticleActivity.class);
-                    intent.putExtra("title", currentArticle.getTitle());
-                    intent.putExtra("link", currentArticle.getLink());
-                    context.startActivity(intent);
-
+                    urlLoader.load(currentArticle.getTitle(), currentArticle.getLink());
                 }
             });
         }
